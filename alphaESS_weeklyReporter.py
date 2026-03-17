@@ -197,3 +197,6 @@ def main(event=None, context=None):
         return 'Reporte completado.', 200
     else:
         return 'Error obteniendo fallas.', 500
+
+if __name__ == "__main__":
+    main()
