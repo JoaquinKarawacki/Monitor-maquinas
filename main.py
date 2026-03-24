@@ -98,7 +98,13 @@ def get_session_token(username, password):
         response = requests.post(login_url, json=payload, timeout=10)
         response.raise_for_status()
 
-        data = response.json().get("data", {})
+        resp_json = response.json()
+        data = resp_json.get("data")
+
+        if not isinstance(data, dict):
+            print(f"❌ Login fallido. Respuesta inesperada: {resp_json}")
+            return None
+
         token = data.get("token")
         login_co_id = data.get("loginCoId")
 
@@ -110,11 +116,14 @@ def get_session_token(username, password):
                 "loginCoId": login_co_id
             }
 
-        print(f"❌ Login fallido. Respuesta: {response.json()}")
+        print(f"❌ Login fallido. Respuesta: {resp_json}")
         return None
 
     except requests.exceptions.RequestException as e:
         print(f"❌ ERROR en la petición de login: {e}")
+        return None
+    except ValueError as e:
+        print(f"❌ La respuesta no vino en JSON válido: {e}")
         return None
 
 
